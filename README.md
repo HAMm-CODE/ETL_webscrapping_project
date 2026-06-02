@@ -72,10 +72,6 @@ Example of how the screenshots will be displayed in this README:
 ![Output table](images/Task_6_SQL.png)
 ![DB query](images/Task_4_CSV.png)
 
-**How to add screenshots**
-- Create an `images/` directory in the project root (already created for you).
-- Save your screenshots using the recommended filenames or update the image paths in this file if you choose different names.
-- Commit the images to your repository so the README renders them when viewed.
 
 **Notes**
 - This README includes inline screenshots (no icons). If you prefer not to embed images, remove the image lines above.
