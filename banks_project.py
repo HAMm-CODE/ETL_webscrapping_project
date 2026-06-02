@@ -23,7 +23,7 @@ def extract(url, table_attribs):
     information from the website and save it to a data frame. The
     function returns the data frame for further processing. '''
     page = requests.get(url).text
-    data = BeautifulSoup(page, 'html.parser')
+    data = BeautifulSoup(page, 'lxml')
     df = pd.DataFrame(columns=table_attribs)
     tables = data.find_all('tbody')
     rows = tables[0].find_all('tr')
@@ -64,12 +64,12 @@ def run_query(query_statement, sql_connection):
 functions in the correct order to complete the project. Note that this
 portion is not inside any function.'''
 
-data_url = (
+url = (
     "https://web.archive.org/web/20230908091635/"
     "https://en.wikipedia.org/wiki/List_of_largest_banks"
 )
 
-table_attribs_extract = ["Name", "MC_USD_Billion"]
+table_attribs = ["Bank_Name", "MC_USD_Billion"]
 table_attribs_final = [
     "Name",
     "MC_USD_Billion",
@@ -84,3 +84,9 @@ table_name = "Largest_banks"
 log_file = "code_log.txt"
 
 log_progress('Preliminaries complete. Initiating ETL process')
+
+#log extraction
+log_progress('Data extraction complete. Initiating Transformation process')
+print(extract(url, table_attribs))
+# df = extract(url, table_attribs)
+# print(df)
