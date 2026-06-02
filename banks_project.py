@@ -15,7 +15,7 @@ def log_progress(message):
     now = dt.now()
     timestamp = now.strftime(timestamp_format)
     with open('code_log.txt', "a") as f:
-        f.write(f"{timestamp}: {message}")
+        f.write(f"{timestamp}: {message}\n")
 
 
 def extract(url, table_attribs):
@@ -66,10 +66,15 @@ def load_to_csv(df, output_path):
 def load_to_db(df, sql_connection, table_name):
     ''' This function saves the final data frame to a database
 	table with the provided name. Function returns nothing.'''
+    df.to_sql(table_name, sql_connection, if_exists='replace', index=False)
 
 def run_query(query_statement, sql_connection):
     ''' This function runs the query on the database table and
     prints the output on the terminal. Function returns nothing. '''
+    print(query_statement)
+    query_output = pd.read_sql(query_statement, sql_connection)
+    print(query_output)
+
 
 ''' Here, you define the required entities and call the relevant
 functions in the correct order to complete the project. Note that this
@@ -111,3 +116,20 @@ df = transform(df, "exchange_rate.csv")
 log_progress('Data saved to CSV file')
 load_to_csv(df, 'Largest_banks_data.csv')
 
+#log initialdb connection
+log_progress('SQL Connection initiated')
+sql_connection = sqlite3.connect('Banks.db')
+print("Connected!")
+
+#log loading to db
+log_progress('Data loaded to Database as a table, Executing queries')
+load_to_db(df, sql_connection, 'Largest_banks')
+
+#log sql execution
+log_progress('Process Complete')
+run_query('SELECT * FROM Largest_banks', sql_connection)
+run_query('SELECT AVG(MC_GBP_Billion) FROM Largest_banks', sql_connection)
+run_query('SELECT Bank_Name from Largest_banks LIMIT 5', sql_connection)
+
+#log closing server connection
+log_progress('Server Connection closed')
