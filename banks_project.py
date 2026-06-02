@@ -45,12 +45,23 @@ def transform(df, csv_path):
 	information, and adds three columns to the data frame, each
 	containing the transformed version of Market Cap column to
 	respective currencies'''
+    df_csv = pd.read_csv(csv_path)
+    dict = df_csv.set_index('Currency').to_dict()['Rate']
 
+    # Ensure exchange_rate['GBP'] is always a float
+    gbp_rate = float(dict['GBP'])
+    eur_rate = float(dict['EUR'])
+    inr_rate = float(dict['INR'])
+    df['MC_GBP_Billion'] = [np.round(float(x) * gbp_rate, 2) for x in df['MC_USD_Billion']]
+    df['MC_EUR_Billion'] = [np.round(float(x) * eur_rate, 2) for x in df['MC_USD_Billion']]
+    df['MC_INR_Billion'] = [np.round(float(x) * inr_rate, 2) for x in df['MC_USD_Billion']]
+    print(df['MC_EUR_Billion'][4])
     return df
 
 def load_to_csv(df, output_path):
     ''' This function saves the final data frame as a CSV file in
 	the provided path. Function returns nothing.'''
+    df.to_csv(output_path)
 
 def load_to_db(df, sql_connection, table_name):
     ''' This function saves the final data frame to a database
@@ -87,6 +98,16 @@ log_progress('Preliminaries complete. Initiating ETL process')
 
 #log extraction
 log_progress('Data extraction complete. Initiating Transformation process')
-print(extract(url, table_attribs))
-# df = extract(url, table_attribs)
+# print(extract(url, table_attribs))
+df = extract(url, table_attribs)
 # print(df)
+
+#log transformation
+log_progress('Data transformation complete. Initiating Loading process')
+df = transform(df, "exchange_rate.csv")
+# print(df) #df after transformation
+
+#log loading to csv
+log_progress('Data saved to CSV file')
+load_to_csv(df, 'Largest_banks_data.csv')
+
