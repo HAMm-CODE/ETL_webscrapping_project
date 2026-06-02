@@ -1,6 +1,12 @@
 # Code for ETL operations on Country-GDP data
 
 # Importing the required libraries
+from datetime import datetime as dt
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+import numpy as np
+import sqlite3
 
 def log_progress(message):
     ''' This function logs the mentioned message of a given stage of the
@@ -37,17 +43,9 @@ def run_query(query_statement, sql_connection):
 functions in the correct order to complete the project. Note that this
 portion is not inside any function.'''
 
-
-code_name = "banks_project.py"
-
 data_url = (
     "https://web.archive.org/web/20230908091635/"
     "https://en.wikipedia.org/wiki/List_of_largest_banks"
-)
-
-exchange_rate_csv_path = (
-    "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/"
-    "IBMSkillsNetwork-PY0221EN-Coursera/labs/v2/exchange_rate.csv"
 )
 
 table_attribs_extract = ["Name", "MC_USD_Billion"]
